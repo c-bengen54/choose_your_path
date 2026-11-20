@@ -19,9 +19,7 @@ public class Sprite {
 
         int dotIndex = imageFilePath.indexOf(".");
 
-        if (!imageFileEndings.contains(imageFilePath.substring(dotIndex+1).toLowerCase())){
-            System.out.println(imageFilePath.substring(dotIndex+1).toLowerCase());
-
+        if (!imageFileEndings.contains(imageFilePath.substring(dotIndex+1).toLowerCase())){ 
             throw new IOException("Incorrect file type, must be .png, .jpeg, or .jpg");
         }
 

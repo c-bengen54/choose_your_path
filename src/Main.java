@@ -13,7 +13,7 @@ public class Main {
             Thread.sleep(500);
             image.terminalOutput();
             Thread.sleep(1000);
-            soundPlayer.soundOutput(500);
+            soundPlayer.soundOutput();
 
         } catch (InterruptedException e){
             e.printStackTrace();
