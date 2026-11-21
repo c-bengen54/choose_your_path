@@ -25,7 +25,7 @@ public class TextUtils {
      *
      * <p>Every {@code char} is delayed, including the invisible characters of ANSI
      * escape sequences, so a string produced by one of the {@code colorizeString}
-     * methods will pause unevenly. If the thread is interrupted, the stack trace
+     * methods may pause unevenly. If the thread is interrupted, the stack trace
      * is printed and the remaining characters are not printed.
      *
      * @param message the text to print
@@ -55,6 +55,9 @@ public class TextUtils {
      *                {@link IllegalArgumentException}
      */
     public static final void typewriterText(String message, int delay){
+        if (delay < 0){
+            throw new IllegalArgumentException("Delay parameter must be greater than 0.");
+        }
         try{
             for (int i = 0; i < message.length(); i++){
                 char character = message.charAt(i);
@@ -73,7 +76,6 @@ public class TextUtils {
      */
     public static final void pause() throws InterruptedException{
         try{Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-        
     }
 
     /**
@@ -88,7 +90,7 @@ public class TextUtils {
             throw new IllegalArgumentException("Delay cannot be negative integer.");
         }
 
-        Thread.sleep(delay);
+        try{Thread.sleep(delay);} catch (InterruptedException e){e.printStackTrace();}
     }
 
     /**
@@ -158,10 +160,14 @@ public class TextUtils {
      *                                  is not six characters long, or contains
      *                                  characters that are not hex digits
      *                                  ({@link NumberFormatException} is a
-     *                                  subclass of this exception)
-     * @throws NullPointerException     if {@code hexCode} is {@code null}
+     *                                  subclass of this exception).
+     *                                  throws if {@code hexCode} is {@code null}
      */
     public static final String colorizeString(String messageString, String hexCode) throws IllegalArgumentException{
+        if (hexCode == null){
+            throw new IllegalArgumentException("Parameter 'hexCode', must not be null.");
+        }
+
         String cleanHex = hexCode.startsWith("#") ? hexCode.substring(1) : hexCode;
         if (cleanHex.length() != 6){
             throw new IllegalArgumentException("Invalid hex code length.");

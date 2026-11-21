@@ -1,4 +1,4 @@
-package src;
+package characters;
 
 public class Boss {
     

@@ -12,7 +12,7 @@ import java.io.IOException;
  * inline image protocol. Terminals that do not support inline images would
  * otherwise print the raw Base64 data, so {@link #terminalOutput()} consults
  * {@link ImageProtocol#detectProtocol()} first and prints nothing when no
- * supported protocol is detected.
+ * supported protocol is detected. Only iTerm2 image protocol is supported currently.
  *
  * <p>Example:
  * <pre>{@code
