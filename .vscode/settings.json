@@ -1,4 +1,5 @@
 {
     "terminal.integrated.enableImages": true,
+    "terminal.integrated.textBlinking": true,
     "terminal.integrated.gpuAcceleration": "on"
 }

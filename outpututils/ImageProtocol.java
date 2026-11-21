@@ -17,6 +17,9 @@ import java.util.Set;
  * @see Protocol
  */
 public class ImageProtocol {
+    private ImageProtocol(){
+        //Prevent instatiation.
+    }
 
     /**
      * The inline image protocols this class can detect.

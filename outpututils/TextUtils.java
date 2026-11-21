@@ -18,6 +18,9 @@ package outpututils;
 public class TextUtils {
     private static final int MILLISECOND_DELAY = 50;
     private static final String RESET = "\u001B[0m";
+    private TextUtils(){
+        //Prevent instantiation.
+    }
 
     /**
      * Prints a message one character at a time with a default delay of 50
@@ -137,11 +140,20 @@ public class TextUtils {
      * @return the colorized string, ready to print
      * @throws IllegalArgumentException if any color component is outside 0 to 255
      */
-    public static final String colorizeString(String messageString, int fgRed, int fgGreen, int fgBlue, int bgRed, int bgGreen, int bgBlue){
+    public static final String colorizeString(
+        String messageString, 
+        int fgRed, int fgGreen, int fgBlue, 
+        int bgRed, int bgGreen, int bgBlue
+        ){
+
         validateRGB(fgRed, fgGreen, fgBlue);
         validateRGB(bgRed, bgGreen, bgBlue);
 
-        return String.format("\u001B[38;2;%d;%d;%dm\u001B[48;2;%d;%d;%dm%s%s", fgRed, fgGreen, fgBlue, bgRed, bgGreen, bgBlue, messageString, RESET);
+        return String.format(
+        "\u001B[38;2;%d;%d;%dm\u001B[48;2;%d;%d;%dm%s%s", 
+        fgRed, fgGreen, fgBlue, 
+        bgRed, bgGreen, bgBlue, 
+        messageString, RESET);
     }
 
     /**
@@ -182,5 +194,67 @@ public class TextUtils {
         validateRGB(red, green, blue);
 
         return colorizeString(messageString, red, green, blue);
+    }
+    
+    /**
+     * Wraps a string in a 24-bit color foreground and background color escape codes, 
+     * with other ANSI formatter options such as bolding or italics supports
+     * 
+     * @param messageString the text to color
+     * @param fgRed         the foreground red component, 0 to 255
+     * @param fgGreen       the foreground green component, 0 to 255
+     * @param fgBlue        the foreground blue component, 0 to 255
+     * @param bgRed         the background red component, 0 to 255
+     * @param bgGreen       the background green component, 0 to 255
+     * @param bgBlue        the background blue component, 0 to 255
+     * @param formatter     the ANSI formatter code to be specified. 
+     *                      must be a valid code in the form {@code a;b;c;} where a, b, and c are the formatter numbers.
+     * @return the colorized string, ready to print
+     * @throws IllegalArgumentException if any color component is outside 0 to 255, if the formatter string does not contain a ;, 
+     *                                  or if the formatter number is incorrect
+     */
+    public static final String colorizeString(
+        String messageString, 
+        int fgRed, int fgBlue, int fgGreen, 
+        int bgRed, int bgGreen, int bgBlue, 
+        String formatter
+        ) throws IllegalArgumentException{
+
+        validateRGB(fgRed, fgGreen, fgBlue);
+        validateRGB(bgRed, bgGreen, bgBlue);
+
+        if (formatter == null){
+            return colorizeString(messageString, fgRed, fgGreen, fgBlue, bgRed, bgGreen, bgBlue);
+        }
+
+        if (formatter.contains(";") == false){
+            throw new IllegalArgumentException("Formatter string must contain ANSI formatting codes separated by a ';'.");
+        }
+
+        String[] formatterParts = formatter.split(";");
+
+        for (String part: formatterParts){
+            int ansiCode = Integer.parseInt(part.trim());
+            
+            /* 
+            System.out.println(ansiCode);
+            Object code = ansiCode;
+            System.out.println(code.getClass().getSimpleName());
+            */
+
+            if (!(ansiCode != 1 
+                || ansiCode != 2
+                || ansiCode != 3
+                || ansiCode != 4
+                || ansiCode != 5
+                || ansiCode != 7
+                || ansiCode != 9
+            )
+            ){
+                throw new IllegalArgumentException("ANSI formatting code must be an integer 1-5, 7, or 9.");
+            }
+        }
+
+        return String.format("\u001B[%s38;2;%d;%d;%dm\u001B[48;2;%d;%d;%dm%s%s", formatter, fgRed, fgGreen, fgBlue, bgRed, bgGreen, bgBlue, messageString, RESET);
     }
 }

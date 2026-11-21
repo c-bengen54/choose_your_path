@@ -75,7 +75,8 @@ public class Sprite {
      * <p>Currently, only terminals with iTerm2 support are able to view images.
      */
     public void terminalOutput(){
-        if (ImageProtocol.detectProtocol() != ImageProtocol.Protocol.ITERM2) {
+        ImageProtocol.Protocol protocol = ImageProtocol.detectProtocol();
+        if (protocol != ImageProtocol.Protocol.ITERM2) {
             return;
         }
 
