@@ -2,6 +2,8 @@ package outpututils;
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Plays short sound effects from {@code .wav}, {@code .aiff}, or {@code .au} files.
@@ -14,7 +16,8 @@ import java.util.Set;
  *
  * <p>All playback methods <b>block</b> the calling thread until playback finishes.
  * Run them on a separate thread if you need other work to continue (for example,
- * in a GUI application).
+ * in a GUI application). playAsync is one of the <b>non-blocking</b> methods which uses
+ * a background thread to play sound while the program executes.
  *
  * <p>Example:
  * <pre>{@code
@@ -72,23 +75,7 @@ public class ShortSoundPlayer {
      * the stack trace is printed and playback is cut off when the clip is closed.
      */
     public void soundOutput(){
-        try{
-            File audioFile = new File(filePath);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-            
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-
-            clip.start();
-
-            Thread.sleep(clip.getMicrosecondLength()/1000);
-
-            clip.close();
-            audioStream.close();
-
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | InterruptedException e){
-            e.printStackTrace();
-        }
+        soundOutput(Integer.MAX_VALUE);
     }
 
     /**
@@ -113,19 +100,24 @@ public class ShortSoundPlayer {
         if (milliseconds < 0) {
             throw new IllegalArgumentException("Milliseconds should be greater than 0");
         }
+
+        CountDownLatch clipDone = new CountDownLatch(1);
         
-        try{
+        try(
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(filePath));
             Clip clip = AudioSystem.getClip();
+        ){
 
+            clip.addLineListener(e -> {
+                if (e.getType() == LineEvent.Type.STOP){clipDone.countDown();}
+            });
+            
             clip.open(audioStream);
             clip.start();
 
-            Thread.sleep(Math.min(milliseconds, clip.getMicrosecondLength() / 1000));
-            clip.stop();
 
-            clip.close();
-            audioStream.close();
+            clipDone.await(milliseconds, TimeUnit.MILLISECONDS);
+            clip.stop();
 
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e){
             e.printStackTrace();
@@ -156,15 +148,15 @@ public class ShortSoundPlayer {
      * @see #soundOutput()
      */
     public void playAsync() {
-    try (AudioInputStream in = AudioSystem.getAudioInputStream(new File(filePath))) {
-        Clip clip = AudioSystem.getClip();
-        clip.addLineListener(e -> {
-            if (e.getType() == LineEvent.Type.STOP) clip.close();
-        });
-        clip.open(in);
-        clip.start();
-    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-        e.printStackTrace();
+        try (AudioInputStream in = AudioSystem.getAudioInputStream(new File(filePath))) {
+            Clip clip = AudioSystem.getClip();
+            clip.addLineListener(e -> {
+                if (e.getType() == LineEvent.Type.STOP) clip.close();
+            });
+            clip.open(in);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
-}
 }
