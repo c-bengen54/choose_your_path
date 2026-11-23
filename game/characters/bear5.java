@@ -1,6 +1,4 @@
 package characters;
-import Items.Item;
-import Items.ItemRegistry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -9,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import items.Item;
+import items.ItemRegistry;
 
 /**
  * The player character: health, power, money, location, inventory, party,

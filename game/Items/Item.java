@@ -1,4 +1,4 @@
-package Items;
+package items;
 
 import characters.Combatant;
 import java.util.List;
