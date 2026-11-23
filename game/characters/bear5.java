@@ -1,4 +1,5 @@
 package characters;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -77,7 +78,10 @@ public class bear5 implements Combatant {
         inventory.merge(item.id(), count, Integer::sum);
     }
 
-    /** Adds one copy of an item to the inventory. */
+    /** Adds one copy of an item to the inventory. 
+     * 
+     * @param item The item to be added to the inventory
+    */
     public void addToInventory(Item item) {
         addToInventory(item, 1);
     }
@@ -106,12 +110,20 @@ public class bear5 implements Combatant {
         }
     }
 
-    /** Returns how many of the item with this id the player owns (0 if none). */
+    /** Returns how many of the item with this id the player owns (0 if none). 
+     * 
+     * @param itemId the item's id
+     * @return how many of the item the player owns
+    */
     public int countOf(String itemId) {
         return inventory.getOrDefault(itemId, 0);
     }
 
-    /** Returns whether the player owns at least one of the item with this id. */
+    /** Returns whether the player owns at least one of the item with this id. 
+     * 
+     * @param itemId the item's id
+     * @return {@code true} if the player owns at least one of the item, false otherwise.
+    */
     public boolean hasItem(String itemId) {
         return countOf(itemId) > 0;
     }
@@ -172,7 +184,10 @@ public class bear5 implements Combatant {
         health = (int) Math.min(maxHealth, (long) health + amount);
     }
 
-    /** Returns whether the player has any health left. */
+    /** Returns whether the player has any health left. 
+     * 
+     * @return {@code true} is health is above 0.
+    */
     public boolean isAlive() {
         return health > 0;
     }
@@ -235,7 +250,11 @@ public class bear5 implements Combatant {
         return knownMoves.add(requireId(moveId));
     }
 
-    /** Returns whether the player has learned the move with this id. */
+    /** Returns whether the player has learned the move with this id. 
+     * 
+     * @param moveId the move's id
+     * @return {@code true} if the move has already been learned, {@code false} if new
+    */
     public boolean knowsMove(String moveId) {
         return knownMoves.contains(moveId);
     }
@@ -275,11 +294,46 @@ public class bear5 implements Combatant {
         statuses.merge(status, turns, Math::max);
     }
 
+    /**
+     * Gets the players current health
+     * 
+     * @return the amount of health the player currently has
+     */
     public int getHealth()     { return health; }
+
+    /**
+     * Gets the players max health
+     * 
+     * @return the maximum amount of health the player currently has
+     */
     public int getMaxHealth()  { return maxHealth; }
+
+    /**
+     * Gets the currently amount of power the player has
+     * 
+     * @return the amount of power the player currently has
+     */
     public int getPower()      { return power; }
+
+    /**
+     * Gets the maximum amount of power the player has
+     * 
+     * @return the maximal amount of power the player currently has
+     */
     public int getMaxPower()   { return maxPower; }
+
+    /**
+     * Get the amount of money the player currently has
+     * 
+     * @return the amount of money the player currently has
+     */
     public int getMoney()      { return money; }
+
+    /**
+     * Get the current location the player is at
+     * 
+     * @return the location id of the current location the player is at
+     */
     public String getLocation() { return location; }
 
     /**
@@ -292,22 +346,34 @@ public class bear5 implements Combatant {
         this.location = requireId(location);
     }
 
-    /** Returns a read-only view of the inventory (item id to count). */
+    /** Returns a read-only view of the inventory (item id to count). 
+     * 
+     * @return an unmodifiable map of everything in the inventory
+    */
     public Map<String, Integer> getInventory() {
         return Collections.unmodifiableMap(inventory);
     }
 
-    /** Returns a read-only view of the party member ids. */
+    /** Returns a read-only view of the party member ids. 
+     * 
+     * @return an unmodifiable list of all known party member ids
+    */
     public List<String> getParty() {
         return Collections.unmodifiableList(party);
     }
 
-    /** Returns a read-only view of the learned move ids. */
+    /** Returns a read-only view of the learned move ids. 
+     * 
+     * @return an unmodifiable set of all known move ids
+    */
     public Set<String> getKnownMoves() {
         return Collections.unmodifiableSet(knownMoves);
     }
 
-    /** Returns a read-only view of active statuses (name to turns remaining). */
+    /** Returns a read-only view of active statuses (name to turns remaining). 
+     * 
+     * @return an unmodifiable map of active statuses and their remaining turns
+    */
     public Map<String, Integer> getStatuses() {
         return Collections.unmodifiableMap(statuses);
     }
@@ -315,6 +381,17 @@ public class bear5 implements Combatant {
     /**
      * A plain-data snapshot of a player, suitable for writing to a save file.
      * Collections are copied, so the snapshot never changes after creation.
+     * 
+     * @param health amount of health to be saved
+     * @param maxHealth maximal amount of health to be saved
+     * @param power amount of power to be saved
+     * @param maxPower maximal amount of power to be saved
+     * @param money amount of money to be saved
+     * @param location location id to be saved
+     * @param inventory inventory to be saved
+     * @param party party members to be saved
+     * @param knownMoves all known moves to be saved
+     * @param statuses all statuses to be saved
      */
     public record SaveData(
         int health, int maxHealth, int power, int maxPower, int money,
@@ -330,7 +407,10 @@ public class bear5 implements Combatant {
         }
     }
 
-    /** Captures the player's current state as plain data. */
+    /** Captures the player's current state as plain data. 
+     * 
+     * @return new save state containing all the players current states
+    */
     public SaveData toSaveData() {
         return new SaveData(
             health, maxHealth, power, maxPower, money, location,
@@ -395,7 +475,7 @@ public class bear5 implements Combatant {
 
     private static String requireId(String id) {
         if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("Id cannot be null or blank.");
+            throw new IllegalArgumentException(id + ": Id cannot be null or blank.");
         }
         return id;
     }

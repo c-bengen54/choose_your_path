@@ -1,8 +1,8 @@
 package items;
 
-import characters.Boss;
+import characters.Combatant;
 
 @FunctionalInterface
 public interface ItemEffect {
-    void apply(Boss target);
+    void apply(Combatant target);
 }

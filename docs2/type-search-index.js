@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html","k":"18"},{"p":"characters","l":"bear5"},{"p":"characters","l":"Boss"},{"p":"characters","l":"Combatant","k":"10"},{"p":"characters","l":"NPC"},{"p":"characters","l":"bear5.SaveData","k":"11"}];updateSearchResults();
